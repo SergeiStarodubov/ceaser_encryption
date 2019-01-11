@@ -164,8 +164,8 @@ class Encrypter extends React.Component {
     try {
       let text = this.textarea.current;
       text.select();
-      document.execCommand("copy");
-      window.getSelection().removeAllRanges();
+      document.execCommand("copy"); //the command is to copy to the clipboard 
+      window.getSelection().removeAllRanges(); //to unselect the text
     } catch {
       alert("try to click the button again");
     }
