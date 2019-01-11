@@ -3,6 +3,7 @@ import React from "react";
 class Encrypter extends React.Component {
   constructor() {
     super();
+    this.textarea = React.createRef();
     this.russianAlphabet = [
       "а",
       "б",
@@ -72,6 +73,36 @@ class Encrypter extends React.Component {
     for (let i = 0; i < cipher.length; i++) {
       this.encryption[this.russianAlphabet[i]] = cipher[i];
     }
+    //add this.encryption UpperLetter
+    for (let key in this.encryption) {
+      this.encryption[key.toUpperCase()] = this.encryption[key].toUpperCase();
+    }
+    // and additinal signs
+    this.encryption[" "] = " ";
+    this.encryption[","] = ",";
+    this.encryption["."] = ".";
+    this.encryption["!"] = "!";
+    this.encryption["`"] = "`";
+    this.encryption["~"] = "~";
+    this.encryption["@"] = "@";
+    this.encryption["#"] = "#";
+    this.encryption["%"] = "%";
+    this.encryption["&"] = "&";
+    this.encryption["_"] = "_";
+    this.encryption["-"] = "-";
+    this.encryption["="] = "=";
+    this.encryption[">"] = ">";
+    this.encryption["<"] = "<";
+    this.encryption["1"] = "1";
+    this.encryption["2"] = "2";
+    this.encryption["3"] = "3";
+    this.encryption["4"] = "4";
+    this.encryption["5"] = "5";
+    this.encryption["6"] = "6";
+    this.encryption["7"] = "7";
+    this.encryption["8"] = "8";
+    this.encryption["9"] = "9";
+    this.encryption["0"] = "0";
   };
 
   checkKey = array => {
@@ -84,25 +115,78 @@ class Encrypter extends React.Component {
       }
     }
   };
+
   encryptText = (text, keyword, code) => {
     this.hashFunction(keyword, code);
-    console.log(this.encryption);
-    console.log(text);
-    text = text.split('')
-    console.log(text);
+    text = text.split("");
     for (let i = 0; i < text.length; i++) {
-      let letter = text[i]
-      let reg = new RegExp( `${letter}`,"g")
-      text[i] = text[i].replace(reg, this.encryption[letter]);
+      let letter = text[i];
+      if (letter === "}")
+        text[i] = text[i].replace("\\}", this.encryption[letter]);
+      else if (letter === "$")
+        text[i] = text[i].replace("\\$", this.encryption[letter]);
+      else if (letter === "^")
+        text[i] = text[i].replace("\\^", this.encryption[letter]);
+      else if (letter === "*")
+        text[i] = text[i].replace("\\*", this.encryption[letter]);
+      else if (letter === "?")
+        text[i] = text[i].replace("\\?", this.encryption[letter]);
+      else if (letter === "\\")
+        text[i] = text[i].replace("\\\\", this.encryption[letter]);
+      else if (letter === "{")
+        text[i] = text[i].replace("\\{", this.encryption[letter]);
+      else if (letter === "+")
+        text[i] = text[i].replace("\\+", this.encryption[letter]);
+      else if (letter === "]")
+        text[i] = text[i].replace("\\]", this.encryption[letter]);
+      else if (letter === "(")
+        text[i] = text[i].replace("\\(", this.encryption[letter]);
+      else if (letter === ")")
+        text[i] = text[i].replace("\\)", this.encryption[letter]);
+      else if (letter === "[")
+        text[i] = text[i].replace("\\[", this.encryption[letter]);
+      else if (letter === "|")
+        text[i] = text[i].replace("\\|", this.encryption[letter]);
+      else {
+        let reg = new RegExp(`${letter}`, "g");
+        text[i] = text[i].replace(reg, this.encryption[letter]);
+      }
     }
-    text = text.join('')
-    text = text.replace(/undefined/g, ' ')
-    console.log(text);
+    text = text.join("");
+    return text;
   };
-  state = {};
+
+  state = {
+    valueText: ""
+  };
+
+  copyTextToClipBoard = () => {
+    try {
+      let text = this.textarea.current;
+      text.select();
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+    } catch {
+      alert("try to click the button again");
+    }
+  };
+
+  handleTextArea = event => {
+    this.setState({ value: event.target.value });
+  };
+
   render() {
-    this.encryptText('привет мир', 'язь', 3);
-    return <div />;
+    this.encryptText("Привет, Мир}\\@+9.", "язь", 3);
+    return (
+      <div id="encrypter">
+        <textarea
+          ref={this.textarea}
+          value={this.state.valueText}
+          onChange={this.handleTextArea}
+        />
+        <button onClick={this.copyTextToClipBoard}>click</button>
+      </div>
+    );
   }
 }
 
