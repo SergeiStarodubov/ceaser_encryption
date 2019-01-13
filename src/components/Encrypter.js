@@ -1,4 +1,5 @@
 import React from "react";
+import style from "../styles/encripter.css";
 
 class Encrypter extends React.Component {
   constructor() {
@@ -46,9 +47,7 @@ class Encrypter extends React.Component {
     if (isNaN(code)) return false;
     let cipher = new Array(33);
     let lettersOfKey = key.split("");
-    this.checkKey(lettersOfKey) === false
-      ? console.log("failed key")
-      : console.log("key is ok");
+
     for (let i of lettersOfKey) {
       cipher[code] = i;
       code++;
@@ -77,7 +76,8 @@ class Encrypter extends React.Component {
     for (let key in this.encryption) {
       this.encryption[key.toUpperCase()] = this.encryption[key].toUpperCase();
     }
-    // and additinal signs
+    // and all additinal signs
+    //make function to wrapp theese exprestions=================
     this.encryption[" "] = " ";
     this.encryption[","] = ",";
     this.encryption["."] = ".";
@@ -103,9 +103,11 @@ class Encrypter extends React.Component {
     this.encryption["8"] = "8";
     this.encryption["9"] = "9";
     this.encryption["0"] = "0";
+    //==============================================
   };
 
-  checkKey = array => {
+  checkItcontainsOnlyRussianLetters = array => {
+    // to check  if the key has only russian letters
     for (let i = 0; i < array.length; i++) {
       if (/[а-яА-ЯЁё]/g.test(array[i]) === false) return false;
       for (let j = 0; j < array.length; j++) {
@@ -153,38 +155,97 @@ class Encrypter extends React.Component {
       }
     }
     text = text.join("");
-    return text;
-  };
-
-  state = {
-    valueText: ""
+    this.setState({ valueText: text });
   };
 
   copyTextToClipBoard = () => {
     try {
       let text = this.textarea.current;
       text.select();
-      document.execCommand("copy"); //the command is to copy to the clipboard 
+      document.execCommand("copy"); //the command is to copy to the clipboard
       window.getSelection().removeAllRanges(); //to unselect the text
     } catch {
-      alert("try to click the button again");
+      alert("try to click copy again");
     }
   };
 
   handleTextArea = event => {
-    this.setState({ value: event.target.value });
+    this.setState({ valueText: event.target.value });
   };
 
+  handleValueKey = e => {
+    this.setState({ valueKey: e.target.value });
+  };
+
+  handleValueCode = e => {
+    let number = +e.target.value;
+    this.setState({ valueCode: number });
+  };
+
+  startEncryption = () => {
+    const { valueKey, valueCode, valueText } = this.state;
+    let [key, text] = [valueKey.split(""), valueText.split("")];
+    // checking is to make sure that all requarments are carried out
+    for (let i = 0; i < text.length; i++) {
+      if (/[а-яА-ЯЁё]/g.test(text[i]) === false) text = false;
+    }
+    if (
+      this.checkItcontainsOnlyRussianLetters(key) === false ||
+      text === false ||
+      isNaN(valueCode) === true
+    ) {
+      return false;
+    } else {
+      this.encryptText(valueText, valueKey, valueCode);
+    }
+  };
+
+  state = {
+    valueText: undefined,
+    valueKey: undefined,
+    valueCode: undefined
+  };
+
+  //система сеток
+  // col-10 order-2 -менять блоки местами
+  // <div className =  'container-fluid'>
+  // <div className = 'row'>
+  //   <div className = 'col-md-6' style = {{border: '1px solid black'}}>
+  //     <div className = 'row'>
+  //       <div className =  'col-md-4' style = {{border: '1px solid black'}}> inside 1</div>
+  //       <div className =  'col-md-4' style = {{border: '1px solid black'}}> inside 2</div>
+  //       <div className =  'col-md-4' style = {{border: '1px solid black'}}> inside 3</div>
+  //     </div>
+  //   </div>
+  //   <div className =  'col-md-5' style = {{border: '1px solid black'}}> second</div>
+  // </div>
+  // </div>
+
+  //шапка для меню
+
   render() {
-    this.encryptText("Привет, Мир}\\@+9.", "язь", 3);
     return (
-      <div id="encrypter">
+      <div>      
         <textarea
           ref={this.textarea}
           value={this.state.valueText}
           onChange={this.handleTextArea}
         />
-        <button onClick={this.copyTextToClipBoard}>click</button>
+        <p>
+          <button id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
+            copy
+          </button>
+        </p>
+        <p>
+          Введите ключ : <input type="text" onChange={this.handleValueKey} />
+        </p>
+        <p>
+          Введите код (цифра 0-32)
+          <input type="text" onChange={this.handleValueCode} />
+        </p>
+        <p>
+          <button onClick={this.startEncryption}>encrypt</button>
+        </p>
       </div>
     );
   }
