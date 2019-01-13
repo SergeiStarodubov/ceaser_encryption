@@ -187,7 +187,7 @@ class Encrypter extends React.Component {
     let [key, text] = [valueKey.split(""), valueText.split("")];
     // checking is to make sure that all requarments are carried out
     for (let i = 0; i < text.length; i++) {
-      if (/[а-яА-ЯЁё]/g.test(text[i]) === false) text = false;
+      if (/[а-яА-ЯЁё\s\d!`_\-\)\]\[\}\{<>'".,|\\\/\?=\?\*\$\^&\(\+#@~]/g.test(text[i]) === false) text = false;
     }
     if (
       this.checkItcontainsOnlyRussianLetters(key) === false ||
@@ -221,12 +221,12 @@ class Encrypter extends React.Component {
   // </div>
   // </div>
 
-  //шапка для меню
 
   render() {
     return (
-      <div>      
+      <div>
         <textarea
+          style = {{width: '300px'}}
           ref={this.textarea}
           value={this.state.valueText}
           onChange={this.handleTextArea}
