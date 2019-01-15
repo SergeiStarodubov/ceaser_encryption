@@ -155,6 +155,7 @@ class Encrypter extends React.Component {
       }
     }
     text = text.join("");
+    text = text.replace(/undefined/g, " ");
     this.setState({ valueText: text });
   };
 
@@ -171,6 +172,15 @@ class Encrypter extends React.Component {
 
   handleTextArea = event => {
     this.setState({ valueText: event.target.value });
+    const { valueText } = this.state;
+    // checking is to make sure that all requarments are carried out
+    if (/[a-zA-z]/g.test(valueText) === true) {
+      this.setState({ validationTextarea: "is-invalid" });
+      this.setState({ errorTextarea: "visible" });
+    } else {
+      this.setState({ validationTextarea: "is-valid" });
+      this.setState({ errorTextarea: "hidden" });
+    }
   };
 
   handleValueKey = e => {
@@ -184,10 +194,22 @@ class Encrypter extends React.Component {
 
   startEncryption = () => {
     const { valueKey, valueCode, valueText } = this.state;
+    if (
+      valueKey === undefined ||
+      valueCode === undefined ||
+      valueText === undefined
+    ) {
+      return false;
+    }
     let [key, text] = [valueKey.split(""), valueText.split("")];
     // checking is to make sure that all requarments are carried out
     for (let i = 0; i < text.length; i++) {
-      if (/[а-яА-ЯЁё\s\d!`_\-\)\]\[\}\{<>'".,|\\\/\?=\?\*\$\^&\(\+#@~]/g.test(text[i]) === false) text = false;
+      if (
+        /[а-яА-ЯЁё\s\d!`_\-\)\]\[\}\{<>'".,|\\\/\?=\?\*\$\^&\(\+#@~]/g.test(
+          text[i]
+        ) === false
+      )
+        text = false;
     }
     if (
       this.checkItcontainsOnlyRussianLetters(key) === false ||
@@ -203,39 +225,34 @@ class Encrypter extends React.Component {
   state = {
     valueText: undefined,
     valueKey: undefined,
-    valueCode: undefined
+    valueCode: undefined,
+    validationTextarea: "is-invalid",
+    errorTextarea: "visible"
   };
 
-  //система сеток
-  // col-10 order-2 -менять блоки местами
-  // <div className =  'container-fluid'>
-  // <div className = 'row'>
-  //   <div className = 'col-md-6' style = {{border: '1px solid black'}}>
-  //     <div className = 'row'>
-  //       <div className =  'col-md-4' style = {{border: '1px solid black'}}> inside 1</div>
-  //       <div className =  'col-md-4' style = {{border: '1px solid black'}}> inside 2</div>
-  //       <div className =  'col-md-4' style = {{border: '1px solid black'}}> inside 3</div>
-  //     </div>
-  //   </div>
-  //   <div className =  'col-md-5' style = {{border: '1px solid black'}}> second</div>
-  // </div>
-  // </div>
-
-
   render() {
+    let { validationTextarea, errorTextarea } = this.state;
+    let textarea = `form-control ${validationTextarea}`;
     return (
-      <div>
-        <textarea
-          style = {{width: '300px'}}
-          ref={this.textarea}
-          value={this.state.valueText}
-          onChange={this.handleTextArea}
-        />
-        <p>
-          <button id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
-            copy
-          </button>
-        </p>
+      <div className="container m-auto">
+        <form className="was-valodated">
+          <label htmlFor="validationTextarea" className="text-info">
+            <span style = {{fontSize: '120%'}}>Шифр цезаря</span>
+          </label>
+          <textarea
+            className={textarea}
+            id="validationTextarea"
+            placeholder="Вставьте текст"
+            required
+            ref={this.textarea}
+            value={this.state.valueText}
+            onChange={this.handleTextArea}
+          />
+          <div className="text-danger" style={{ visibility: errorTextarea }}>
+            Используйте только русскую раскладку
+          </div>
+        </form>
+
         <p>
           Введите ключ : <input type="text" onChange={this.handleValueKey} />
         </p>
@@ -244,7 +261,10 @@ class Encrypter extends React.Component {
           <input type="text" onChange={this.handleValueCode} />
         </p>
         <p>
-          <button onClick={this.startEncryption}>encrypt</button>
+          <button onClick={this.startEncryption}>шифровать</button>
+          <button id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
+            копировать текст
+          </button>
         </p>
       </div>
     );

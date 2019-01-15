@@ -1,0 +1,9 @@
+body {
+  background-image: url(kripto.jpg);
+  background-size: cover;
+}
+
+#validationTextarea {
+  width: 500px;
+  height: 315px;
+}
