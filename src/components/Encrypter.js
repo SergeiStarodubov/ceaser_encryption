@@ -185,6 +185,14 @@ class Encrypter extends React.Component {
 
   handleValueKey = e => {
     this.setState({ valueKey: e.target.value });
+    const {valueKey} = this.state;
+    if (/[a-zA-z0-9]/g.test(valueKey) === true) {
+      this.setState({ validationKey: "is-invalid" });
+      this.setState({ errorKey: "visible" });
+    } else {
+      this.setState({ validationKey: "is-valid" });
+      this.setState({ errorKey: "hidden" });
+    }
   };
 
   handleValueCode = e => {
@@ -227,17 +235,32 @@ class Encrypter extends React.Component {
     valueKey: undefined,
     valueCode: undefined,
     validationTextarea: "is-invalid",
-    errorTextarea: "visible"
+    validationKey: "is-invalid",
+    validationCode: "is-invalid",
+    errorTextarea: "visible",
+    errorKey: "visible",
+    errorCode: "visible"
   };
 
   render() {
-    let { validationTextarea, errorTextarea } = this.state;
-    let textarea = `form-control ${validationTextarea}`;
+    let {
+      validationTextarea,
+      validationKey,
+      validationCode,
+      errorTextarea,
+      errorKey,
+      errorCode
+    } = this.state;
+
+    let textarea = `form-control ${validationTextarea}`,
+        inputCode = `form-control ${validationCode}`,
+        inputKey = `form-control ${validationKey}`;
+
     return (
       <div className="container m-auto">
         <form className="was-valodated">
           <label htmlFor="validationTextarea" className="text-info">
-            <span style = {{fontSize: '120%'}}>Шифр цезаря</span>
+            <span style={{ fontSize: "120%" }}>Шифр цезаря</span>
           </label>
           <textarea
             className={textarea}
@@ -251,15 +274,40 @@ class Encrypter extends React.Component {
           <div className="text-danger" style={{ visibility: errorTextarea }}>
             Используйте только русскую раскладку
           </div>
+
+          <div>
+            <label htmlFor="validationKey01" className="text-info">
+              Введите ключ:
+            </label>
+            <input
+              type="text"
+              style={{ width: "500px" }}
+              className = {inputKey}
+              id="validationKey01"
+              required
+              onChange={this.handleValueKey}
+            />
+            <div className = 'text-danger'style = {{visibility: errorKey}}>
+              только русская раскладка, буквы не должны повторяться
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="validationCode" className="text-info">
+              Введите код:
+            </label>
+            <input
+              style={{ width: "500px" }}
+              type="text"
+              className = {inputCode}
+              id="validationCode"
+              required
+              onChange={this.handleValueCode}
+            />
+            <div className = 'text-danger' style = {{visibility: errorCode}}>только цифры</div>
+          </div>
         </form>
 
-        <p>
-          Введите ключ : <input type="text" onChange={this.handleValueKey} />
-        </p>
-        <p>
-          Введите код (цифра 0-32)
-          <input type="text" onChange={this.handleValueCode} />
-        </p>
         <p>
           <button onClick={this.startEncryption}>шифровать</button>
           <button id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
