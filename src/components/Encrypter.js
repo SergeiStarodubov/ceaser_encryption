@@ -57,7 +57,7 @@ class Encrypter extends React.Component {
         if (letter === lettersOfKey[i]) return false;
       }
     };
-
+    //fill out the rest chipher by russian letters in turn of Alphabet
     for (let i = 0; i < this.russianAlphabet.length; i++) {
       code = code > 32 ? 0 : code;
       if (
@@ -71,12 +71,11 @@ class Encrypter extends React.Component {
     for (let i = 0; i < cipher.length; i++) {
       this.encryption[this.russianAlphabet[i]] = cipher[i];
     }
-    //add this.encryption UpperLetter
+    //add into the cipher UpperLetter
     for (let key in this.encryption) {
       this.encryption[key.toUpperCase()] = this.encryption[key].toUpperCase();
     }
-    // and all additinal signs
-    //make function to wrapp theese exprestions=================
+    // and all punctuation marks
     this.encryption[" "] = " ";
     this.encryption[","] = ",";
     this.encryption["."] = ".";
@@ -102,12 +101,12 @@ class Encrypter extends React.Component {
     this.encryption["8"] = "8";
     this.encryption["9"] = "9";
     this.encryption["0"] = "0";
-    //==============================================
   };
 
   checkItcontainsOnlyRussianLetters = array => {
     // to check  if the key has only russian letters
     for (let i = 0; i < array.length; i++) {
+    // check if key letters are not repeatable themself
       if (/[а-яА-ЯЁё]/g.test(array[i]) === false) return false;
       for (let j = 0; j < array.length; j++) {
         if (array[i] === array[j] && i !== j) {
@@ -119,6 +118,7 @@ class Encrypter extends React.Component {
 
   encryptText = (text, keyword, code) => {
     this.hashFunction(keyword, code);
+    //
     text = text.split("");
     for (let i = 0; i < text.length; i++) {
       let letter = text[i];
