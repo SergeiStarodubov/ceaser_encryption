@@ -42,12 +42,11 @@ class Encrypter extends React.Component {
     ];
     this.encryption = {};
   }
-
   hashFunction = (key, code) => {
     if (isNaN(code)) return false;
     let cipher = new Array(33);
     let lettersOfKey = key.split("");
-
+    //add the keyword into the cipher
     for (let i of lettersOfKey) {
       cipher[code] = i;
       code++;
@@ -185,14 +184,6 @@ class Encrypter extends React.Component {
 
   handleValueKey = e => {
     this.setState({ valueKey: e.target.value });
-    const {valueKey} = this.state;
-    if (/[a-zA-z0-9]/g.test(valueKey) === true) {
-      this.setState({ validationKey: "is-invalid" });
-      this.setState({ errorKey: "visible" });
-    } else {
-      this.setState({ validationKey: "is-valid" });
-      this.setState({ errorKey: "hidden" });
-    }
   };
 
   handleValueCode = e => {
@@ -222,7 +213,9 @@ class Encrypter extends React.Component {
     if (
       this.checkItcontainsOnlyRussianLetters(key) === false ||
       text === false ||
-      isNaN(valueCode) === true
+      isNaN(valueCode) === true ||
+      valueCode === 0 ||
+      valueCode.toString().length > 1
     ) {
       return false;
     } else {
@@ -249,12 +242,41 @@ class Encrypter extends React.Component {
       validationCode,
       errorTextarea,
       errorKey,
-      errorCode
+      errorCode,
+      valueKey,
+      valueCode
     } = this.state;
 
     let textarea = `form-control ${validationTextarea}`,
-        inputCode = `form-control ${validationCode}`,
-        inputKey = `form-control ${validationKey}`;
+      inputCode = `form-control ${validationCode}`,
+      inputKey = `form-control ${validationKey}`;
+    //cheking the Key =====================
+    let lettersOfKey = valueKey === undefined ? " " : valueKey.split("");
+    if (
+      /[a-zA-z0-9]/g.test(valueKey) === true ||
+      this.checkItcontainsOnlyRussianLetters(lettersOfKey) === false ||
+      valueKey === ""
+    ) {
+      inputKey = "form-control is-invalid";
+      errorKey = "visible";
+    } else {
+      inputKey = "form-control is-valid";
+      errorKey = "hidden";
+    }
+    // =====================================
+    if (
+      isNaN(valueCode) === true ||
+      valueCode === 0 ||
+      valueCode.toString().length > 1
+
+    ) {
+      inputCode = "form-control is-invalid";
+      errorCode = "visible";
+    } else {
+      inputCode = "form-control is-valid";
+      errorCode = "hidden";
+      console.log(valueCode);
+    }
 
     return (
       <div className="container m-auto">
@@ -271,7 +293,7 @@ class Encrypter extends React.Component {
             value={this.state.valueText}
             onChange={this.handleTextArea}
           />
-          <div className="text-danger" style={{ visibility: errorTextarea }}>
+          <div className="text-danger" style={{ visibility: errorTextarea, fontSize: "80%" }}>
             Используйте только русскую раскладку
           </div>
 
@@ -282,12 +304,13 @@ class Encrypter extends React.Component {
             <input
               type="text"
               style={{ width: "500px" }}
-              className = {inputKey}
+              className={inputKey}
               id="validationKey01"
               required
               onChange={this.handleValueKey}
+              onMouseDown={this.handleValueKey2}
             />
-            <div className = 'text-danger'style = {{visibility: errorKey}}>
+            <div className="text-danger" style={{ visibility: errorKey, fontSize: "80%" }}>
               только русская раскладка, буквы не должны повторяться
             </div>
           </div>
@@ -299,18 +322,20 @@ class Encrypter extends React.Component {
             <input
               style={{ width: "500px" }}
               type="text"
-              className = {inputCode}
+              className={inputCode}
               id="validationCode"
               required
               onChange={this.handleValueCode}
             />
-            <div className = 'text-danger' style = {{visibility: errorCode}}>только цифры</div>
+            <div className="text-danger" style={{ visibility: errorCode, fontSize: "80%" }}>
+              только цифры от 1 до 9 включительно
+            </div>
           </div>
         </form>
 
         <p>
-          <button onClick={this.startEncryption}>шифровать</button>
-          <button id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
+          <button className ="btn btn-primary mr-5 mt-2" onClick={this.startEncryption}>шифровать</button>
+          <button className ="btn btn-secondary mt-2" id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
             копировать текст
           </button>
         </p>
