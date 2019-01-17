@@ -118,8 +118,8 @@ class Encrypter extends React.Component {
 
   encryptText = (text, keyword, code) => {
     this.hashFunction(keyword, code);
-    //
     text = text.split("");
+    //compare letters from original text and the cipher and replace them in case if they are RegExp marks
     for (let i = 0; i < text.length; i++) {
       let letter = text[i];
       if (letter === "}")
@@ -264,20 +264,20 @@ class Encrypter extends React.Component {
       errorKey = "hidden";
     }
     // =====================================
+
+    // cheking the Code -----------------------
     if (
       isNaN(valueCode) === true ||
       valueCode === 0 ||
       valueCode.toString().length > 1
-
     ) {
       inputCode = "form-control is-invalid";
       errorCode = "visible";
     } else {
       inputCode = "form-control is-valid";
       errorCode = "hidden";
-      console.log(valueCode);
     }
-
+    //-------------------------------------
     return (
       <div className="container m-auto">
         <form className="was-valodated">
