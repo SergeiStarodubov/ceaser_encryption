@@ -279,11 +279,9 @@ class Encrypter extends React.Component {
     }
     //-------------------------------------
     return (
-      <div className="container m-auto">
+      <>
         <form className="was-valodated">
-          <label htmlFor="validationTextarea" className="text-info">
-            <span style={{ fontSize: "120%" }}>Шифр цезаря</span>
-          </label>
+          <label htmlFor="validationTextarea" className="text-info">  </label>
           <textarea
             className={textarea}
             id="validationTextarea"
@@ -339,7 +337,7 @@ class Encrypter extends React.Component {
             копировать текст
           </button>
         </p>
-      </div>
+      </>
     );
   }
 }
