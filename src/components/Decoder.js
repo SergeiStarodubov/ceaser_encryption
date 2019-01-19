@@ -1,5 +1,5 @@
 import React from "react";
-//
+////
 class Decoder extends React.Component {
   constructor() {
     super();
