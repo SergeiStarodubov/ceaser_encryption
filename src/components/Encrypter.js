@@ -244,7 +244,8 @@ class Encrypter extends React.Component {
       errorKey,
       errorCode,
       valueKey,
-      valueCode
+      valueCode,
+      valueText
     } = this.state;
 
     let textarea = `form-control ${validationTextarea}`,
@@ -278,6 +279,15 @@ class Encrypter extends React.Component {
       errorCode = "hidden";
     }
     //-------------------------------------
+
+    if (/[a-zA-z]/g.test(valueText) === true || valueText === '') {
+      textarea =  "form-control is-invalid"
+      errorTextarea =  "visible" ;
+    } else {
+      textarea = "form-control is-valid" ;
+      errorTextarea = "hidden";
+    }
+
     return (
       <>
         <form className="was-valodated">
