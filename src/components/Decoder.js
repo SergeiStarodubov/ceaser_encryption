@@ -73,6 +73,7 @@ class Decoder extends React.Component {
           this.amountLetters[key] / this.amountLetters.wholeAmountLetters
         ).toFixed(4);
     }
+    //it is wrong
     // for (let enscriptedLetter in this.amountLetters) {
     //   for (let letter in this.frequencyLetters) {
     //     if (
