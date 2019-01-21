@@ -4,7 +4,7 @@ import Decoder from "./components/Decoder.js";
 
 class App extends React.Component {
   state = {
-    link: true
+    link: false
   };
 
   switchTabs = e => {
@@ -27,7 +27,7 @@ class App extends React.Component {
           <li className="nav-item">
             <a
               id="cipher"
-              className="nav-link "
+              className="nav-link active "
               style={{ width: "140px" }}
               href="#"
               onClick={this.switchTabs}
@@ -38,7 +38,7 @@ class App extends React.Component {
           <li className="nav-item">
             <a
               id="decoder"
-              className="nav-link active"
+              className="nav-link "
               href="#"
               onClick={this.switchTabs}
             >

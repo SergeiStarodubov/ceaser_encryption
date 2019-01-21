@@ -106,7 +106,7 @@ class Encrypter extends React.Component {
   checkItcontainsOnlyRussianLetters = array => {
     // to check  if the key has only russian letters
     for (let i = 0; i < array.length; i++) {
-    // check if key letters are not repeatable themself
+      // check if key letters are not repeatable themself
       if (/[а-яА-ЯЁё]/g.test(array[i]) === false) return false;
       for (let j = 0; j < array.length; j++) {
         if (array[i] === array[j] && i !== j) {
@@ -204,7 +204,7 @@ class Encrypter extends React.Component {
     // checking is to make sure that all requarments are carried out
     for (let i = 0; i < text.length; i++) {
       if (
-        /[а-яА-ЯЁё\s\d!`_\-\)\]\[\}\{<>'".,|\\\/\?=\?\*\$\^&\(\+#@~]/g.test(
+        /[а-яА-ЯЁё\s\d!`_\-\)\]\[\}\{<>'".,:|«»—\\\/\?=\?\*\$\^&\(\+#@~]/g.test(
           text[i]
         ) === false
       )
@@ -280,28 +280,33 @@ class Encrypter extends React.Component {
     }
     //-------------------------------------
 
-    if (/[a-zA-z]/g.test(valueText) === true || valueText === '') {
-      textarea =  "form-control is-invalid"
-      errorTextarea =  "visible" ;
+    if (/[a-zA-z]/g.test(valueText) === true || valueText === "") {
+      textarea = "form-control is-invalid";
+      errorTextarea = "visible";
     } else {
-      textarea = "form-control is-valid" ;
+      textarea = "form-control is-valid";
       errorTextarea = "hidden";
     }
 
     return (
       <>
         <form className="was-valodated">
-          <label htmlFor="validationTextarea" className="text-info">  </label>
+          <label htmlFor="validationTextarea" className="text-info">
+            {" "}
+          </label>
           <textarea
             className={textarea}
             id="validationTextarea"
-            placeholder="Вставьте текст"
+            placeholder="Напишите текст"
             required
             ref={this.textarea}
             value={this.state.valueText}
             onChange={this.handleTextArea}
           />
-          <div className="text-danger" style={{ visibility: errorTextarea, fontSize: "80%" }}>
+          <div
+            className="text-danger"
+            style={{ visibility: errorTextarea, fontSize: "80%" }}
+          >
             Используйте только русскую раскладку
           </div>
 
@@ -318,7 +323,10 @@ class Encrypter extends React.Component {
               onChange={this.handleValueKey}
               onMouseDown={this.handleValueKey2}
             />
-            <div className="text-danger" style={{ visibility: errorKey, fontSize: "80%" }}>
+            <div
+              className="text-danger"
+              style={{ visibility: errorKey, fontSize: "80%" }}
+            >
               только русская раскладка, буквы не должны повторяться
             </div>
           </div>
@@ -335,15 +343,27 @@ class Encrypter extends React.Component {
               required
               onChange={this.handleValueCode}
             />
-            <div className="text-danger" style={{ visibility: errorCode, fontSize: "80%" }}>
+            <div
+              className="text-danger"
+              style={{ visibility: errorCode, fontSize: "80%" }}
+            >
               только цифры от 1 до 9 включительно
             </div>
           </div>
         </form>
 
         <p>
-          <button className ="btn btn-primary mr-5 mt-2" onClick={this.startEncryption}>шифровать</button>
-          <button className ="btn btn-secondary mt-2" id="copyTextToClipBoard" onClick={this.copyTextToClipBoard}>
+          <button
+            className="btn btn-primary mr-5 mt-2"
+            onClick={this.startEncryption}
+          >
+            шифровать
+          </button>
+          <button
+            className="btn btn-secondary mt-2"
+            id="copyTextToClipBoard"
+            onClick={this.copyTextToClipBoard}
+          >
             копировать текст
           </button>
         </p>

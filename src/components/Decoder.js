@@ -3,46 +3,51 @@ import React from "react";
 class Decoder extends React.Component {
   constructor() {
     super();
-    this.frequencyLetters = {
-      о: 0.10983,
-      е: 0.08483,
-      а: 0.07998,
-      и: 0.07367,
-      н: 0.067,
-      т: 0.06318,
-      с: 0.05473,
-      р: 0.04746,
-      в: 0.04533,
-      л: 0.04343,
-      к: 0.03486,
-      м: 0.03203,
-      д: 0.02977,
-      п: 0.02804,
-      у: 0.02615,
-      я: 0.02001,
-      ы: 0.01898,
-      ь: 0.01735,
-      г: 0.01687,
-      з: 0.01641,
-      б: 0.01592,
-      ч: 0.0145,
-      й: 0.01208,
-      х: 0.00966,
-      ж: 0.0094,
-      ш: 0.00718,
-      ю: 0.00639,
-      ц: 0.00486,
-      щ: 0.00361,
-      э: 0.00331,
-      ф: 0.00267,
-      ъ: 0.00037,
-      ё: 0.00013
-    };
+    this.frequencyLetters = [
+      "о",
+      "е",
+      "а",
+      "и",
+      "н",
+      "т",
+      "с",
+      "р",
+      "в",
+      "л",
+      "к",
+      "м",
+      "д",
+      "п",
+      "у",
+      "я",
+      "ы",
+      "ь",
+      "г",
+      "з",
+      "б",
+      "ч",
+      "й",
+      "х",
+      "ж",
+      "ш",
+      "ю",
+      "ц",
+      "щ",
+      "э",
+      "ф",
+      "ъ",
+      "ё"
+    ];
     this.amountLetters = {};
-    this.cipher = {}
+    this.cipher = {};
   }
   state = {
     text: ""
+  };
+
+  compareNumeric = (a, b) => {
+    if (a > b) return 1;
+    if (a < b) return -1;
   };
 
   getAmoutnAndValueLetters = array => {
@@ -73,27 +78,44 @@ class Decoder extends React.Component {
           this.amountLetters[key] / this.amountLetters.wholeAmountLetters
         ).toFixed(4);
     }
-    //it is wrong
-    // for (let enscriptedLetter in this.amountLetters) {
-    //   for (let letter in this.frequencyLetters) {
-    //     if (
-    //       this.amountLetters[enscriptedLetter] >
-    //         this.frequencyLetters[letter] - 0.001 &&
-    //       this.amountLetters[enscriptedLetter] <
-    //         this.frequencyLetters[letter] + 0.001
-    //
-    //     ) {
-    //       this.cipher[enscriptedLetter] = letter
-    //     }
-    //   }
-    // }
-    // for (let i = 0; i < text.length; i++) {
-    //   if (/[а-яА-ЯёЁ]/g.test(text[i]) ===  true) {
-    //     text[i] = this.cipher[text[i].toLowerCase()];
-    //   }
-    // }
-    // text = text.join('');
-    console.log(text);
+    let sortingOrderOfLetters = [];
+    let letters = [];
+    for (let key in this.amountLetters) {
+      if (key !== "wholeAmountLetters") {
+        sortingOrderOfLetters.push(+this.amountLetters[key]);
+        letters.push(key);
+      }
+    }
+    sortingOrderOfLetters.sort(this.compareNumeric);
+
+    let sortingLetters = [];
+
+    let sorting = () => {
+      let i = sortingOrderOfLetters.length - 1;
+      if (sortingOrderOfLetters.length < 0) return;
+      for (let key in this.amountLetters) {
+        if (sortingOrderOfLetters[i] === +this.amountLetters[key]) {
+          sortingLetters.push(key);
+          sortingOrderOfLetters.pop();
+          sorting();
+        }
+      }
+    };
+    sorting();
+
+    sortingLetters = sortingLetters.filter(item => {
+      if (/[а-яА-ЯёЁ]/g.test(item)) return item;
+    });
+    //sortingLetters is the array where the most popular letters go decreasing their value
+    let cipher = {};
+    for (let i = 0; i < sortingLetters.length; i++) {
+      cipher[sortingLetters[i]] = this.frequencyLetters[i];
+    }
+    for (let i = 0; i < text.length; i++) {
+      if (/[а-яА-Я]/g.test(text[i]) === true) text[i] = cipher[text[i]];
+    }
+    text = text.join("");
+    this.setState({ text: text });
   };
 
   handleTextArea = event => {
@@ -106,10 +128,10 @@ class Decoder extends React.Component {
     return (
       <>
         <form>
-          <label htmlFor="codedText" className="text-info" />
+          <label htmlFor="codedText" className="text-info">{this.state.text.length} символов</label>
           <textarea
             style={{ width: "500px" }}
-            placeholder="Вставьте зашифрованный русскоязычный текст"
+            placeholder="Вставьте зашифрованный русскоязычный текст объемом не менее 2000 символов"
             className="form-control"
             id="codedText"
             rows="10"
