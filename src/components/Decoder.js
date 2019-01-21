@@ -102,7 +102,7 @@ class Decoder extends React.Component {
       }
     };
     sorting();
-
+//
     sortingLetters = sortingLetters.filter(item => {
       if (/[а-яА-ЯёЁ]/g.test(item)) return item;
     });
